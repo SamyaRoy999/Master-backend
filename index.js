@@ -1,7 +1,12 @@
 import express from "express";
-const app = express();
 import "dotenv/config";
+const app = express();
 const port = process.env.PORT;
+
+// middlewore
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
