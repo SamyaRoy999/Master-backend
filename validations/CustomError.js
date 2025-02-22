@@ -11,7 +11,7 @@ export class CustomErrorReporter {
    * A collection of errors. Feel free to give accurate types
    * to this property
    */
-  errors = [];
+  errors = {};
 
   /**
    * VineJS call the report method
