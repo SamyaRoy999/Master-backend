@@ -1,14 +1,13 @@
-import { use } from "bcrypt/promises.js";
 import prisma from "../DB/db.config.js";
 import { loginSchema, registerSchema } from "../validations/authValidation.js";
 import vine, { errors } from "@vinejs/vine";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 class AuthController {
   static async register(req, res) {
     try {
       const body = req.body;
-      console.log("Request Body:", req.body);
       const validator = vine.compile(registerSchema);
       const payload = await validator.validate(body);
       const salt = bcrypt.genSaltSync(10);
@@ -48,7 +47,6 @@ class AuthController {
   static async login(req, res) {
     try {
       const body = req.body;
-      console.log("Request Body:", req.body);
       const validator = vine.compile(loginSchema);
       const payload = await validator.validate(body);
 
@@ -64,7 +62,25 @@ class AuthController {
         if (!bcrypt.compareSync(payload.password, findUser.password)) {
           return res.status(400).json({ message: "invalide credentials" });
         }
-        return res.json({ message: "logged in" });
+        // token
+        const payloadData = {
+          id: findUser.id,
+          name: findUser.name,
+          email: findUser.email,
+          profile: findUser.profile,
+        };
+
+        console.log("JWT Secret:", process.env.JWT_SECRET, payloadData);
+
+        const token = jwt.sign(payloadData, process.env.JWT_SECRET, {
+          expiresIn: "365d",
+        });
+        console.log(token + "token");
+
+        return res.json({
+          message: "logged in",
+          access_token: `bearer${token}`,
+        });
       }
 
       return res.status(400).json({ message: "no user found this email" });
