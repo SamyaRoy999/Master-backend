@@ -79,7 +79,7 @@ class AuthController {
 
         return res.json({
           message: "logged in",
-          access_token: `bearer${token}`,
+          access_token: `Bearer ${token}`,
         });
       }
 
