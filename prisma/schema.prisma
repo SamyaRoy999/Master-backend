@@ -29,8 +29,8 @@ model News {
   user_id    Int
   user       Users    @relation(fields: [user_id], references: [id])
   title      String   @db.VarChar(200)
-  contend    String
-  imges      String   @db.VarChar(100)
+  content    String
+  // imges      String   @db.VarChar(100)
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 }
